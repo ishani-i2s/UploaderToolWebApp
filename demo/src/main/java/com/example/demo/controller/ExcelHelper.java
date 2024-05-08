@@ -107,14 +107,14 @@ public class ExcelHelper {
 
     public static void writeToExcel(List<FunctionalObject> errors) {
         Workbook workbook = new HSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Errors");
+        Sheet sheet = workbook.createSheet("Log");
 
         Row header = sheet.createRow(0);
         header.createCell(0).setCellValue("ObjectId");
         header.createCell(1).setCellValue("Description");
         header.createCell(2).setCellValue("Site");
         header.createCell(3).setCellValue("ObjLevel");
-        header.createCell(4).setCellValue("Error");
+        header.createCell(4).setCellValue("Log");
 
         int rowNum = 1;
         for (FunctionalObject error : errors) {
@@ -123,7 +123,7 @@ public class ExcelHelper {
             row.createCell(1).setCellValue(error.getDescription());
             row.createCell(2).setCellValue(error.getSite());
             row.createCell(3).setCellValue(error.getObjLevel());
-            row.createCell(4).setCellValue(error.getError());
+            row.createCell(4).setCellValue(error.getLog());
         }
 
         String filePath = "src/main/resources/static/functionalObjectErrors.xls"; // Adjust the path as needed

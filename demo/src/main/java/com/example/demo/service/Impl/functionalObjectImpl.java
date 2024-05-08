@@ -24,7 +24,7 @@ import java.util.Map;
 public class functionalObjectImpl implements FunctionalObjectService {
     String baseURL="https://ifscloud.tsunamit.com";
     StringBuilder stringBuilder=new StringBuilder(baseURL);
-    String accessToken= "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVdWtEM044dVFiMkgyOGZBNFRnWGh4b1JmMElXMUNkTXV0cjlLbDRKbmpJIn0.eyJleHAiOjE3MTUwODg1OTMsImlhdCI6MTcxNTA4NDk5MywiYXV0aF90aW1lIjoxNzE1MDg0OTkxLCJqdGkiOiI4ZTM3Yzk5OC03ZWZiLTQ1MmMtYTA1Mi0xM2U3ZjlhNWM4NTEiLCJpc3MiOiJodHRwczovL2lmc2Nsb3VkLnRzdW5hbWl0LmNvbS9hdXRoL3JlYWxtcy90c3V0c3QiLCJhdWQiOlsidHN1dHN0IiwiYWNjb3VudCJdLCJzdWIiOiJmMjJhOTYwNy04NzNjLTRjZWYtOGEzMi0xODE5NjdlMWRmZjUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJJRlNfYXVyZW5hIiwic2Vzc2lvbl9zdGF0ZSI6ImI4YzAxYzc3LTVhNjItNGQzOC04YTdkLTVhNjA5NTU2YWM4NCIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovLyIsImh0dHBzOi8vaWZzLWFwcC5naDRzdnF3NXQydXUzbDJpeXRiMWhnZXNnYi5ieC5pbnRlcm5hbC5jbG91ZGFwcC5uZXQiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgbWljcm9wcm9maWxlLWp3dCBlbWFpbCBhdWRpZW5jZSIsInNpZCI6ImI4YzAxYzc3LTVhNjItNGQzOC04YTdkLTVhNjA5NTU2YWM4NCIsInVwbiI6Im5hZGVlc2hhbiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJuYWRlZXNoYW4iLCJlbWFpbCI6Im5hZGVlc2hhLm5AY3JlYXRpdmVzb2Z0d2FyZS5jb20ifQ.KvkFzOWXIjM7OSzyKzEDNCGTPoJjw-lWYkRKEiDFU4miqmaY4ZXGfK1-TJPxv8P8wTp3s8Q2gla1pjfmDJKA_NQeorMeQJ4mPacEPTizj5uhTHhoI6G-WsjzcaQWB6v3Pl7jICNvoNmjdhgjbWjSkihukPZ_yeYdEM3Y4d7cWzXaJ5GD3BlZYwvYB9Duz39ZdAC3CZQsNd68dKs2rhFIYM3LqN7ZoZIC5Lb9Wygh-hd4b8GhHqIPsH-FqRGzH043SMCpuQ2xOj_Hb9UCqrmziBumEb06OpGMXUaiOCadP2klhYLmyNohfBdED62HBMvCBl5XTuR8Cl1_zDt3hgq-hQ";
+    String accessToken= "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVdWtEM044dVFiMkgyOGZBNFRnWGh4b1JmMElXMUNkTXV0cjlLbDRKbmpJIn0.eyJleHAiOjE3MTUxNTUxNTEsImlhdCI6MTcxNTE1MTU1MSwiYXV0aF90aW1lIjoxNzE1MTUxNTQ5LCJqdGkiOiJiNTkxZmNiMS00ZjlkLTRjZTYtYmU3Zi02YzJkY2ZjYTFiYmIiLCJpc3MiOiJodHRwczovL2lmc2Nsb3VkLnRzdW5hbWl0LmNvbS9hdXRoL3JlYWxtcy90c3V0c3QiLCJhdWQiOlsidHN1dHN0IiwiYWNjb3VudCJdLCJzdWIiOiJmMjJhOTYwNy04NzNjLTRjZWYtOGEzMi0xODE5NjdlMWRmZjUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJJRlNfYXVyZW5hIiwic2Vzc2lvbl9zdGF0ZSI6IjkwMjkyNDk5LTgyN2UtNDUwOC05ZjlkLTYxZTdkNjFhYWMxOSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovLyIsImh0dHBzOi8vaWZzLWFwcC5naDRzdnF3NXQydXUzbDJpeXRiMWhnZXNnYi5ieC5pbnRlcm5hbC5jbG91ZGFwcC5uZXQiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgbWljcm9wcm9maWxlLWp3dCBlbWFpbCBhdWRpZW5jZSIsInNpZCI6IjkwMjkyNDk5LTgyN2UtNDUwOC05ZjlkLTYxZTdkNjFhYWMxOSIsInVwbiI6Im5hZGVlc2hhbiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJuYWRlZXNoYW4iLCJlbWFpbCI6Im5hZGVlc2hhLm5AY3JlYXRpdmVzb2Z0d2FyZS5jb20ifQ.U2jGmc2Vl9Z9ZD-f4RrBt7hVNzoXyR8H6QtG3c9gjJbp25bbzq4XmTN7FKGraZIVe_9_dsFSZStJxPA8lr6zVICqQZwCSGclEidrB7fViPLn0ouFAcXpdoxi6WAeGAJS0iL7q2aJ43ida0NPr4ECXuPCwYrRCQHaoV733r_zQPgY053FiXySdA0_kcBxCv3henf7qsOKZqh_ElEKZZwJYnb2AH-agMoLd6m6pqfe4mcrYq2dIrKFM4PV8QALxnCMR0TZ6xBPjdcJ6B__zGmBL6WW6ktnXNfiuCPI6_TAzhdZR49RGLcliPpcNPikKi0PY5GFhi-DXFkFl-s44rtzxg";
     @Autowired
     FunctionalObjectRepo functionalObject;
 
@@ -95,15 +95,17 @@ public class functionalObjectImpl implements FunctionalObjectService {
             try{
                 var response= restTemplate.exchange(url, HttpMethod.POST, httpEntity, Map.class);
                 if(response.getStatusCode().toString().equals("201 CREATED")){
+                    fun.setLog("Successfull");
+                    invalidList.add(fun);
                     continue;
                 }else {
-                    fun.setError("POST API call failed");
+                    fun.setLog("POST API call failed");
                     invalidList.add(fun);
                 }
             }catch (Exception e) {
                 String errorResponse = e.getMessage();
                 String errorMessage = extractErrorMessageFromJson(errorResponse);
-                fun.setError(errorMessage);
+                fun.setLog(errorMessage);
                 invalidList.add(fun);
             }
         }
@@ -142,7 +144,7 @@ public class functionalObjectImpl implements FunctionalObjectService {
             List<FunctionalObject> invalidList = new ArrayList<>();
             for (FunctionalObject fun : funList) {
                 if (!objLevelList.contains(fun.getObjLevel())) {
-                    fun.setError("Invalid ObjLevel");
+                    fun.setLog("Invalid ObjLevel");
                     invalidList.add(fun);
                 }
             }
@@ -150,7 +152,7 @@ public class functionalObjectImpl implements FunctionalObjectService {
         } catch (Exception e){
             List<FunctionalObject> invalidList = new ArrayList<>();
             for(FunctionalObject fun: funList){
-                fun.setError("API call failed");
+                fun.setLog("API call failed");
                 invalidList.add(fun);
             }
             return invalidList;

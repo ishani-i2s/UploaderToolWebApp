@@ -12,5 +12,5 @@ public class FunctionalObject {
     String Description;
     String Site;
     String ObjLevel;
-    String error;
+    String log;
 }

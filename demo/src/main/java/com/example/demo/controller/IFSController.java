@@ -37,13 +37,15 @@ public class IFSController {
             try {
                 List<FunctionalObject> errors=functionalObject.save(file);
                 ExcelHelper.writeToExcel(errors);
-                String message = "";
-                if(errors.size()>0){
-                   message = "Errors";
-                }else{
-                    message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                int successCount = 0;
+                for(FunctionalObject error:errors){
+                   if(error.getLog()=="Successfull"){
+                       successCount++;
+                   }
                 }
-                return new ResponseEntity<>(message, HttpStatus.OK);
+                int errorCount = errors.size()-successCount;
+                Map<String,Integer> response = Map.of("successCount",successCount,"errorCount",errorCount);
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } catch (Exception e) {
                 String message = "Could not upload the file: " + file.getOriginalFilename() + "!";
                 return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
