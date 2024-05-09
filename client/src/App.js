@@ -1,13 +1,15 @@
 import './App.css';
 import './index.css';
 import FileUpload from './pages/FileUpload';
-import { LoginCard } from './pages/Login';
+import LoginApp, { LoginCard } from './pages/Login';
 
 function App() {
   return (
     <div className="App">
       {/* <FileUpload /> */}
-      <LoginCard />
+      <LoginApp>
+        
+      </LoginApp>
     </div>
   );
 }
