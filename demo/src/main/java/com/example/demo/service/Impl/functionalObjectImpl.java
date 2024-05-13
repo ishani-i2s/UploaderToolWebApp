@@ -67,7 +67,7 @@ public class functionalObjectImpl implements FunctionalObjectService {
     }
 
     private List<FunctionalObject> postFunctionalObject(List<FunctionalObject> funList) {
-//        System.out.println("Inside the postFunctionalObject method");
+        System.out.println("Inside the postFunctionalObject method");
 //        System.out.println("The functional object list is"+funList);
         HttpHeaders headers= gethttpHeaders();
         stringBuilder.setLength(0);

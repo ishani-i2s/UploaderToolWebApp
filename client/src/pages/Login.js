@@ -1,7 +1,13 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
 
-export function LoginCard() {
-    
+export default function LoginCard() {
+
+    const navigate = useNavigate();
+    const navigateToHome = () => {
+        // 👇️ Navigate to /contacts
+        navigate('/home');
+      };
 
     return (
         <div className="flex items-center justify-center h-screen">
@@ -16,7 +22,7 @@ export function LoginCard() {
                         <label className="block text-gray-700">Password</label>
                         <input type="password" className="w-full px-4 py-2 mt-2 border rounded-lg text-gray-700 focus:outline-none" />
                     </div>
-                    <button type="submit" className="w-full px-16 py-2 mt-6 font-medium text-white uppercase bg-blue-500 rounded-full hover:bg-blue-600">Login</button>
+                    <button type="submit" className="w-full px-16 py-2 mt-6 font-medium text-white uppercase bg-blue-500 rounded-full hover:bg-blue-600" onClick={navigateToHome}>Login</button>
                 </form>
             </div>
         </div>
