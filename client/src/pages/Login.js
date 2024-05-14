@@ -1,52 +1,68 @@
-// import React, { useEffect,useState } from 'react';
-import { View, Text, Button } from 'react-native';
-import { authorize } from 'react-native-app-auth';
+import React, { useContext, useState,useEffect } from 'react';
+import { AuthContext, AuthProvider} from "react-oauth2-code-pkce";
+import { createRoot } from "react-dom/client";
 
-const config = {
-    issuer: "https://pemuto8-dev1.build.ifs.cloud/auth/realms/pemuto8dev1/.well-known/openid-configuration",
-    clientId:"I2S_Task_Card",
-    redirectUrl:"https://pemuto8-dev1.build.ifs.cloud/auth/realms/pemuto8dev1/protocol/openid-connect/auth",
-    scopes: ['openid', 'profile'],
-};
+const getRoandomState = () => {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
 
-const LoginApp=()=>{
-    const signIn = async () => {
-        try {
-          const result = await authorize(config);
-          console.log('Authorization result:', result);
-          // Handle successful sign-in
-        } catch (error) {
-          console.error('Sign-in error:', error);
-          // Handle sign-in error
-        }
-    };
-    
-    return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Welcome to MyApp</Text>
-        <Button title="Sign In" onPress={signIn} />
-    </View>
-    );
-};
+const authConfig = {
+  clientId: 'I2S_TASK_CARD',
+  authorizationEndpoint: 'https://pemuto8-dev1.build.ifs.cloud/auth/realms/pemuto8dev1/protocol/openid-connect/auth',
+  redirectUri: 'http://localhost:3000/',
+  tokenEndpoint: 'https://pemuto8-dev1.build.ifs.cloud/auth/realms/pemuto8dev1/protocol/openid-connect/token',
+  scope: 'openid microprofile-jwt',
+  state:getRoandomState(),
+  nonce: getRoandomState(),
+  onRefreshTokenExpire: (event) => window.confirm('Session expired. Refresh page to continue using the site?') && event.login(),
+}
 
-export default LoginApp;
+const UserInfo = () => {
+  const { authState } = useContext(AuthContext);
+  const [accessToken, setAccessToken] = useState(null);
 
-    // return (
-    //     <div className="flex items-center justify-center h-screen">
-    //         <div className="bg-white p-8 rounded shadow-2xl w-96">
-    //             <h2 className="text-3xl font-semibold text-center text-gray-800">Login</h2>
-    //             <form className="mt-6">
-    //                 <div>
-    //                     <label className="block text-gray-700">Email Address</label>
-    //                     <input type="email" className="w-full px-4 py-2 mt-2 border rounded-lg text-gray-700 focus:outline-none" />
-    //                 </div>
-    //                 <div className="mt-4">
-    //                     <label className="block text-gray-700">Password</label>
-    //                     <input type="password" className="w-full px-4 py-2 mt-2 border rounded-lg text-gray-700 focus:outline-none" />
-    //                 </div>
-    //                 <button type="submit" className="w-full px-16 py-2 mt-6 font-medium text-white uppercase bg-blue-500 rounded-full hover:bg-blue-600">Login</button>
-    //             </form>
-    //         </div>
+  // Listen for changes in authState and save accessToken
+  // useEffect(() => {
+  //   if (authState.accessToken) {
+  //     setAccessToken(authState.accessToken);
+  //   }else{
+  //     setAccessToken(null);
+  //   }
+  // }, [authState.accessToken]);
+  if(authState){
+    console.log(authState);
+  }
+
+  return (
+    <div>
+      <h1>Logged User</h1>
+    </div>
+    // <div>
+    //   {/* Render user information if available */}
+    //   {authState.user && (
+    //     <div>
+    //       <p>User ID: {authState.user.sub}</p>
+    //       <p>Name: {authState.user.name}</p>
+    //       {/* Add more user details as needed */}
     //     </div>
-    // ); 
+    //   )}
 
+    //   {/* Display access token */}
+    //   {accessToken && (
+    //     <p>Access Token: {accessToken}</p>
+    //   )}
+    // </div>
+  );
+};
+
+
+const LoginCard = () => {
+  return (
+    createRoot(document.getElementById('root')).render(
+      <AuthProvider authConfig={authConfig}>
+      </AuthProvider>
+    )
+  );
+};
+
+export default LoginCard;
