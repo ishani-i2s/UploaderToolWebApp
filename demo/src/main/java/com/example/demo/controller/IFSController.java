@@ -31,11 +31,11 @@ public class IFSController {
     FunctionalObjectService functionalObject;
 
     @PostMapping("/excelUpload")
-    public ResponseEntity<?> uploadExcel(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadExcel(@RequestParam("file") MultipartFile file,@RequestParam("accessToken") String accessToken){
         System.out.println("The file is"+file);
         if(ExcelHelper.hasExcelFormat(file)){
             try {
-                List<FunctionalObject> errors=functionalObject.save(file);
+                List<FunctionalObject> errors=functionalObject.save(file,accessToken);
                 ExcelHelper.writeToExcel(errors);
                 int successCount = 0;
                 for(FunctionalObject error:errors){
@@ -71,19 +71,4 @@ public class IFSController {
                 .body(resource);
     }
 
-    private void refreshResourceCache() {
-        try {
-            // Get the path to the static folder
-            Path staticFolderPath = Paths.get(getClass().getClassLoader().getResource("static").toURI());
-
-            // Walk through the static folder and mark all files for deletion on exit
-            Files.walk(staticFolderPath).forEach(path -> {
-                if (!Files.isDirectory(path)) {
-                    path.toFile().deleteOnExit();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

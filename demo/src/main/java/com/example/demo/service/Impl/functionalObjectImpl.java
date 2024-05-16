@@ -22,9 +22,9 @@ import java.util.Map;
 
 @Service
 public class functionalObjectImpl implements FunctionalObjectService {
-    String baseURL="https://ifscloud.tsunamit.com";
+    String baseURL="https://pemuto8-dev1.build.ifs.cloud";
     StringBuilder stringBuilder=new StringBuilder(baseURL);
-    String accessToken= "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVdWtEM044dVFiMkgyOGZBNFRnWGh4b1JmMElXMUNkTXV0cjlLbDRKbmpJIn0.eyJleHAiOjE3MTUxNTUxNTEsImlhdCI6MTcxNTE1MTU1MSwiYXV0aF90aW1lIjoxNzE1MTUxNTQ5LCJqdGkiOiJiNTkxZmNiMS00ZjlkLTRjZTYtYmU3Zi02YzJkY2ZjYTFiYmIiLCJpc3MiOiJodHRwczovL2lmc2Nsb3VkLnRzdW5hbWl0LmNvbS9hdXRoL3JlYWxtcy90c3V0c3QiLCJhdWQiOlsidHN1dHN0IiwiYWNjb3VudCJdLCJzdWIiOiJmMjJhOTYwNy04NzNjLTRjZWYtOGEzMi0xODE5NjdlMWRmZjUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJJRlNfYXVyZW5hIiwic2Vzc2lvbl9zdGF0ZSI6IjkwMjkyNDk5LTgyN2UtNDUwOC05ZjlkLTYxZTdkNjFhYWMxOSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovLyIsImh0dHBzOi8vaWZzLWFwcC5naDRzdnF3NXQydXUzbDJpeXRiMWhnZXNnYi5ieC5pbnRlcm5hbC5jbG91ZGFwcC5uZXQiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgbWljcm9wcm9maWxlLWp3dCBlbWFpbCBhdWRpZW5jZSIsInNpZCI6IjkwMjkyNDk5LTgyN2UtNDUwOC05ZjlkLTYxZTdkNjFhYWMxOSIsInVwbiI6Im5hZGVlc2hhbiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJuYWRlZXNoYW4iLCJlbWFpbCI6Im5hZGVlc2hhLm5AY3JlYXRpdmVzb2Z0d2FyZS5jb20ifQ.U2jGmc2Vl9Z9ZD-f4RrBt7hVNzoXyR8H6QtG3c9gjJbp25bbzq4XmTN7FKGraZIVe_9_dsFSZStJxPA8lr6zVICqQZwCSGclEidrB7fViPLn0ouFAcXpdoxi6WAeGAJS0iL7q2aJ43ida0NPr4ECXuPCwYrRCQHaoV733r_zQPgY053FiXySdA0_kcBxCv3henf7qsOKZqh_ElEKZZwJYnb2AH-agMoLd6m6pqfe4mcrYq2dIrKFM4PV8QALxnCMR0TZ6xBPjdcJ6B__zGmBL6WW6ktnXNfiuCPI6_TAzhdZR49RGLcliPpcNPikKi0PY5GFhi-DXFkFl-s44rtzxg";
+//    String accessToken= "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVdWtEM044dVFiMkgyOGZBNFRnWGh4b1JmMElXMUNkTXV0cjlLbDRKbmpJIn0.eyJleHAiOjE3MTUxNTUxNTEsImlhdCI6MTcxNTE1MTU1MSwiYXV0aF90aW1lIjoxNzE1MTUxNTQ5LCJqdGkiOiJiNTkxZmNiMS00ZjlkLTRjZTYtYmU3Zi02YzJkY2ZjYTFiYmIiLCJpc3MiOiJodHRwczovL2lmc2Nsb3VkLnRzdW5hbWl0LmNvbS9hdXRoL3JlYWxtcy90c3V0c3QiLCJhdWQiOlsidHN1dHN0IiwiYWNjb3VudCJdLCJzdWIiOiJmMjJhOTYwNy04NzNjLTRjZWYtOGEzMi0xODE5NjdlMWRmZjUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJJRlNfYXVyZW5hIiwic2Vzc2lvbl9zdGF0ZSI6IjkwMjkyNDk5LTgyN2UtNDUwOC05ZjlkLTYxZTdkNjFhYWMxOSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovLyIsImh0dHBzOi8vaWZzLWFwcC5naDRzdnF3NXQydXUzbDJpeXRiMWhnZXNnYi5ieC5pbnRlcm5hbC5jbG91ZGFwcC5uZXQiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgbWljcm9wcm9maWxlLWp3dCBlbWFpbCBhdWRpZW5jZSIsInNpZCI6IjkwMjkyNDk5LTgyN2UtNDUwOC05ZjlkLTYxZTdkNjFhYWMxOSIsInVwbiI6Im5hZGVlc2hhbiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJuYWRlZXNoYW4iLCJlbWFpbCI6Im5hZGVlc2hhLm5AY3JlYXRpdmVzb2Z0d2FyZS5jb20ifQ.U2jGmc2Vl9Z9ZD-f4RrBt7hVNzoXyR8H6QtG3c9gjJbp25bbzq4XmTN7FKGraZIVe_9_dsFSZStJxPA8lr6zVICqQZwCSGclEidrB7fViPLn0ouFAcXpdoxi6WAeGAJS0iL7q2aJ43ida0NPr4ECXuPCwYrRCQHaoV733r_zQPgY053FiXySdA0_kcBxCv3henf7qsOKZqh_ElEKZZwJYnb2AH-agMoLd6m6pqfe4mcrYq2dIrKFM4PV8QALxnCMR0TZ6xBPjdcJ6B__zGmBL6WW6ktnXNfiuCPI6_TAzhdZR49RGLcliPpcNPikKi0PY5GFhi-DXFkFl-s44rtzxg";
     @Autowired
     FunctionalObjectRepo functionalObject;
 
@@ -32,14 +32,14 @@ public class functionalObjectImpl implements FunctionalObjectService {
     private RestTemplate restTemplate;
 
     @Override
-    public List<FunctionalObject> save(MultipartFile file) {
+    public List<FunctionalObject> save(MultipartFile file, String accessToken) {
         List<FunctionalObject> errorList = new ArrayList<>();
         try{
 //            System.out.println("Inside the save method");
             List<FunctionalObject> funList = ExcelHelper.excelToFunList(file.getInputStream());
 
             //get the valid objLevel from an api call
-            errorList = checkObjLevel(funList);
+            errorList = checkObjLevel(funList,accessToken);
             System.out.println("The error list is"+errorList);
 
             //remove the invalid objLevel from the list
@@ -52,7 +52,7 @@ public class functionalObjectImpl implements FunctionalObjectService {
             if(funList.size()==0){
                 return errorList;
             }else{
-                List<FunctionalObject> postStatus= postFunctionalObject(funList);
+                List<FunctionalObject> postStatus= postFunctionalObject(funList,accessToken);
                 System.out.println("The post status is"+postStatus);
                 if(postStatus.size()>0){
                     errorList.addAll(postStatus);
@@ -66,10 +66,10 @@ public class functionalObjectImpl implements FunctionalObjectService {
         }
     }
 
-    private List<FunctionalObject> postFunctionalObject(List<FunctionalObject> funList) {
+    private List<FunctionalObject> postFunctionalObject(List<FunctionalObject> funList,String accessToken) {
 //        System.out.println("Inside the postFunctionalObject method");
 //        System.out.println("The functional object list is"+funList);
-        HttpHeaders headers= gethttpHeaders();
+        HttpHeaders headers= gethttpHeaders(accessToken);
         stringBuilder.setLength(0);
         String url = stringBuilder.append(baseURL).append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/EquipmentFunctionalSet").toString();
         System.out.println("The url is"+url);
@@ -127,8 +127,8 @@ public class functionalObjectImpl implements FunctionalObjectService {
         }
     }
 
-    private List<FunctionalObject> checkObjLevel(List<FunctionalObject> funList) {
-        HttpEntity<Void> httpEntity= new HttpEntity<>(gethttpHeaders());
+    private List<FunctionalObject> checkObjLevel(List<FunctionalObject> funList,String accessToken) {
+        HttpEntity<Void> httpEntity= new HttpEntity<>(gethttpHeaders(accessToken));
         stringBuilder.setLength(0);
         stringBuilder.append(baseURL);
         String url=stringBuilder.append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/Reference_EquipmentObjectLevel").toString();
@@ -159,7 +159,7 @@ public class functionalObjectImpl implements FunctionalObjectService {
         }
     }
 
-    private HttpHeaders gethttpHeaders() {
+    private HttpHeaders gethttpHeaders(String accessToken) {
         HttpHeaders headers= new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);

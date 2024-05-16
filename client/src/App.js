@@ -2,18 +2,16 @@ import './App.css';
 import './index.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import FileUpload from './pages/FileUpload';
-import AuthComponent from './pages/Login';
 import Home from './pages/Home';
 import FixedAssets from './pages/FixedAssets';
-import Started from './pages/GetStarted';
+import Landing from './pages/landing';
 
 export default function App() {
   return (
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Started/>} />
-          <Route path="/login" element={<AuthComponent />} />
+          <Route path="/" element={<Landing/>} />
           <Route path="/home" element={<Home />} />
           <Route path="/fileUpload" element={<FileUpload />} />
           <Route path="/fixedAssets" element={<FixedAssets />} />

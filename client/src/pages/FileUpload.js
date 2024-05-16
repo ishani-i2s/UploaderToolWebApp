@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import DoughnutChart from '../Components/CustomDoughnutChart';
 import ProgressComponent from '../Components/CustomProgressBar';
+import Navbar from '../Components/Navbar';
 
 function FileUpload() {
     const [name, setName] = useState([]);
@@ -43,7 +44,8 @@ function FileUpload() {
     const handleFileUpload = () => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('Name', name);
+        formData.append('accessToken', localStorage.getItem('accessToken'));
+        // formData.append('Name', name);
         axios.post(`${baseURL}/api/excelUpload`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -88,12 +90,11 @@ function FileUpload() {
     }
   
     return (
-        <div className="App">
-        <h1 className='text-4xl text-blue-400 p-4'>File Upload To Server</h1>
+        <div className='home-container'>
+        <Navbar />
         <center>
+        <h1 className='text-4xl text-blue-400 p-4'>File Upload To Server</h1>
             <input type="file" onChange={setDetails} />
-        </center>
-
         <br />
 
         <button className="bg-sky-400 p-2 rounded-lg" onClick={handleFileUpload}>
@@ -118,6 +119,8 @@ function FileUpload() {
                 </button>
             </>
         )} 
+
+        </center>
 
         {res === "Success" && (
            <DoughnutChart data={donutChart.chart1}/>

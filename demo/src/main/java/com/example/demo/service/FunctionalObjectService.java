@@ -7,6 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface FunctionalObjectService {
-    List<FunctionalObject> save(MultipartFile file);
+    List<FunctionalObject> save(MultipartFile file,String accessToken);
     List<FunctionalObject> findAll();
 }
