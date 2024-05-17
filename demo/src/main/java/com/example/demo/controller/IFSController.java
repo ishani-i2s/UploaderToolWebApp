@@ -1,5 +1,7 @@
 package com.example.demo.controller;
+import com.example.demo.entity.FixedAsset;
 import com.example.demo.entity.FunctionalObject;
+import com.example.demo.service.FixedAssetsService;
 import com.example.demo.service.FunctionalObjectService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +32,9 @@ public class IFSController {
     @Autowired
     FunctionalObjectService functionalObject;
 
+    @Autowired
+    FixedAssetsService fixedAssets;
+
     @PostMapping("/excelUpload")
     public ResponseEntity<?> uploadExcel(@RequestParam("file") MultipartFile file) {
         System.out.println("The file is"+file);
@@ -53,6 +58,32 @@ public class IFSController {
         }
         return null;
     }
+
+    @PostMapping("/excelUploadFA")
+    public ResponseEntity<?> uploadExcelFA(@RequestParam("file") MultipartFile file) {
+        System.out.println("The file is"+file);
+        if(ExcelHelper.hasExcelFormat(file)){
+            try {
+                List<FixedAsset> errors=fixedAssets.save(file);
+                ExcelHelper.writeToExcelFA(errors);
+                int successCount = 0;
+                for(FixedAsset error:errors){
+                    if(error.getLog()=="Successfull"){
+                        successCount++;
+                    }
+                }
+                int errorCount = errors.size()-successCount;
+                Map<String,Integer> response = Map.of("successCount",successCount,"errorCount",errorCount);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } catch (Exception e) {
+                String message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+            }
+        }
+        return null;
+    }
+
+
 
     @GetMapping("/excelDownload")
     public ResponseEntity<Resource> downloadExcel() {

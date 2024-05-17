@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.FixedAsset;
 import com.example.demo.entity.FunctionalObject;
 import com.example.demo.entity.Student;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -8,14 +9,12 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ExcelHelper {
@@ -124,6 +123,108 @@ public class ExcelHelper {
             row.createCell(2).setCellValue(error.getSite());
             row.createCell(3).setCellValue(error.getObjLevel());
             row.createCell(4).setCellValue(error.getLog());
+        }
+
+        String filePath = "src/main/resources/static/functionalObjectErrors.xls"; // Adjust the path as needed
+        Path outputPath = Paths.get(filePath);
+
+        try {
+            workbook.write(new FileOutputStream(outputPath.toFile()));
+            workbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static List<FixedAsset> excelToFixList(InputStream inputStream) {
+        try{
+            List<FixedAsset> funList = new ArrayList<>();
+            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            System.out.println("The sheet is"+sheet);
+            System.out.println("The sheet rows"+sheet.getPhysicalNumberOfRows());
+
+            int rowNo=0;
+            int rowCountWithData = 0;
+            for (Row row : sheet) {
+                boolean rowHasData = false;
+                // Iterate through each cell in the row
+                for (Cell cell : row) {
+                    // Check if cell is not empty
+                    if (cell.getCellType() != CellType.BLANK) {
+                        rowHasData = true;
+                        break;
+                    }
+                }
+                // If the row has at least one non-empty cell, consider it as a row with data
+                if (rowHasData) {
+                    rowCountWithData++;
+                }
+            }
+            System.out.println("Number of rows with data: " + rowCountWithData);
+
+            for(int i = 2; i < rowCountWithData; i++) {
+                System.out.println("ok");
+                Row row = sheet.getRow(i);
+                FixedAsset fixedAsset = new FixedAsset();
+                fixedAsset.setCompany(row.getCell(1).getStringCellValue());
+                fixedAsset.setObjectId(row.getCell(2).getStringCellValue());
+                fixedAsset.setDescription(row.getCell(3).getStringCellValue());
+                fixedAsset.setFaObjectType(row.getCell(4).getStringCellValue());
+                fixedAsset.setObjectGroupId(row.getCell(5).getStringCellValue());
+                fixedAsset.setAcquisitionReason(row.getCell(6).getStringCellValue());
+                fixedAsset.setSite(row.getCell(7).getStringCellValue());
+                fixedAsset.setBookId(row.getCell(8).getStringCellValue());
+                fixedAsset.setDepreciationMethod(row.getCell(9).getStringCellValue());
+                int estimatedLifeValue = (int) row.getCell(10).getNumericCellValue();
+                fixedAsset.setEstimatedLife(Integer.toString(estimatedLifeValue));
+//                fixedAsset.setEstimatedLife((int)row.getCell(10).getNumericCellValue());
+                fixedAsset.setAccount(row.getCell(11).getStringCellValue());
+                funList.add(fixedAsset);
+            }
+            System.out.println("The Functional Object List is"+funList);
+            workbook.close();
+            return funList;
+        }catch (Exception e){
+            throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
+        }
+    }
+
+
+    public static void writeToExcelFA(List<FixedAsset> errors) {
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Log");
+
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("Company");
+        header.createCell(1).setCellValue("Object");
+        header.createCell(2).setCellValue("Description");
+        header.createCell(3).setCellValue("Acquisition Reason");
+        header.createCell(4).setCellValue("Object Type");
+        header.createCell(5).setCellValue("Object Group");
+        header.createCell(6).setCellValue("Account");
+        header.createCell(7).setCellValue("Site");
+        header.createCell(8).setCellValue("Book ID");
+        header.createCell(9).setCellValue("Depreciation Method");
+        header.createCell(10).setCellValue("Estimated Life");
+        header.createCell(11).setCellValue("Log");
+
+        int rowNum = 1;
+        for (FixedAsset error : errors) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(error.getCompany());
+            row.createCell(1).setCellValue(error.getObjectId());
+            row.createCell(2).setCellValue(error.getDescription());
+            row.createCell(3).setCellValue(error.getAcquisitionReason());
+            row.createCell(4).setCellValue(error.getFaObjectType());
+            row.createCell(5).setCellValue(error.getObjectGroupId());
+            row.createCell(6).setCellValue(error.getAccount());
+            row.createCell(7).setCellValue(error.getSite());
+            row.createCell(8).setCellValue(error.getBookId());
+            row.createCell(9).setCellValue(error.getDepreciationMethod());
+            row.createCell(10).setCellValue(error.getEstimatedLife());
+            row.createCell(11).setCellValue(error.getLog());
         }
 
         String filePath = "src/main/resources/static/functionalObjectErrors.xls"; // Adjust the path as needed
