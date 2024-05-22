@@ -1,5 +1,5 @@
 # Prerequisites for the frontend
- 	• Go to Node.js official website and download the latest LTS version.
+ 	•Go to Node.js official website and download the latest LTS version.
  	•Download and install VSCode or WebStorm as the IDE for writing and managing your React code
 # Prerequisites for the backend
 	•Download and install the latest version of Java Development Kit (JDK). (java 21.0.1)
