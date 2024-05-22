@@ -12,5 +12,16 @@ public class FunctionalObject {
     String Description;
     String Site;
     String ObjLevel;
+    String ItemClass;
+    String PartNo;
+    String LocationId;
+    String BelongToObject;
+    String PartyType;
+    String PartyIdentity;
+    String WorkType;
+    String Calender;
+    String Note;
+    String SerialNo;
+    String InstallationDate;
     String log;
 }

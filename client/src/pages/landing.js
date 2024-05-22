@@ -34,8 +34,8 @@ const Home = () => {
     }
 
     const config = {
-        authorizationUrl:"https://pemuto8-dev1.build.ifs.cloud/auth/realms/pemuto8dev1/protocol/openid-connect/auth",
-        clientId:"I2S_TASK_CARD",
+        authorizationUrl:"https://ifscloud.tsunamit.com/auth/realms/tsutst/protocol/openid-connect/auth",
+        clientId:"I2S_UPLOADER",
         redirectUri:"http://localhost:3000/",
         responseType:"code",
         scope:"openid microprofile-jwt",
@@ -54,7 +54,7 @@ const Home = () => {
         var details = {
           'code': code,
           'state': state,
-          'client_id': 'I2S_TASK_CARD',
+          'client_id': 'I2S_UPLOADER',
           'grant_type': 'authorization_code',
           'redirect_uri': 'http://localhost:3000/',
         };
@@ -65,7 +65,7 @@ const Home = () => {
         }
         formBody = formBody.join("&");
   
-        fetch('/auth/realms/pemuto8dev1/protocol/openid-connect/token', {
+        fetch('/auth/realms/tsutst/protocol/openid-connect/token', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -91,7 +91,7 @@ const Home = () => {
         }).catch(error => {
           console.error('There was a problem with your fetching the access token:', error);
         });
-      };
+    };
     
     return (
       <div className="home-container">
