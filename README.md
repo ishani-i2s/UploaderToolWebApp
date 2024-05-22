@@ -16,7 +16,7 @@
 
 ![react](https://github.com/NadeeshaNethmini/UploaderTool/assets/154399500/d6c3173c-0e75-46d3-a04e-7e13cdac54be)
 
-# How to setup backend and launch itm.
+# How to setup backend and launch it.
 	•Open IntelliJ IDEA.
 	•Navigate to the server folder of your project and open it.
 	•IntelliJ IDEA will automatically download and set up all required packages and dependencies for the Spring Boot application.
