@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class fixedAssetsImpl implements FixedAssetsService {
     String baseURL="https://ifscloud.tsunamit.com/";
     StringBuilder stringBuilder=new StringBuilder(baseURL);
-    String accessToken= "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVdWtEM044dVFiMkgyOGZBNFRnWGh4b1JmMElXMUNkTXV0cjlLbDRKbmpJIn0.eyJleHAiOjE3MTU5MzUwNzcsImlhdCI6MTcxNTkzMTQ3NywiYXV0aF90aW1lIjoxNzE1OTEyMjc4LCJqdGkiOiI4ZWJiNjA4Yi02ZWM2LTRkMjctYmM0Ni0yYWQ2Nzc1OTg2MzkiLCJpc3MiOiJodHRwczovL2lmc2Nsb3VkLnRzdW5hbWl0LmNvbS9hdXRoL3JlYWxtcy90c3V0c3QiLCJhdWQiOlsidHN1dHN0IiwiYWNjb3VudCJdLCJzdWIiOiJmMWZlZmUyOS1lZDMwLTRiZTItYTcxOC04N2M5MDlmOTkwMWEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJJRlNfYXVyZW5hIiwic2Vzc2lvbl9zdGF0ZSI6IjcwOThlMWUzLWI4OGQtNDlkNC1hZTA3LTE3N2M4ZGVkNTRkZiIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovLyIsImh0dHBzOi8vaWZzLWFwcC5naDRzdnF3NXQydXUzbDJpeXRiMWhnZXNnYi5ieC5pbnRlcm5hbC5jbG91ZGFwcC5uZXQiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgbWljcm9wcm9maWxlLWp3dCBlbWFpbCBhdWRpZW5jZSIsInNpZCI6IjcwOThlMWUzLWI4OGQtNDlkNC1hZTA3LTE3N2M4ZGVkNTRkZiIsInVwbiI6Imlmc2FwcCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJpZnNhcHAifQ.g2aMJ1fPsxX3-OvTsYoH9a2FPmN_3YERK7FdYRZW72yYsWPs63F5uTf-NN2gd62G_5fRiQD3RVqjjA0kbh_PIpjtSeDCMgoqKfO40VZ0fo7EfL6gZgkoMtT06IzIXsyOyJxyw36y59MjFqFZtRswOs1x2OQGIgjfv7HRYcdVKmgtrjlvcvJDT5hWnA_2kdtDOPB2Hff03Wu4GpSSK7nYeqMH6R9c8Hjph503X05ctGZM75Skfr73PryLLlcW67GZvmuHDAd1BUz9RYYXZZn9wfq-xBhpoVDl_7xEdJDxu3sK8AgVMyl5Z00ZaAiV2r6-uIUxcwgd2O-PbNj_YE3fsg";
+    String accessToken= "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVdWtEM044dVFiMkgyOGZBNFRnWGh4b1JmMElXMUNkTXV0cjlLbDRKbmpJIn0.eyJleHAiOjE3MTY4ODA2NzgsImlhdCI6MTcxNjg3NzA3OCwiYXV0aF90aW1lIjoxNzE2ODcwNjAyLCJqdGkiOiIzZWZjNzUzOC00NTQwLTQ2NTMtOWI2Yy1kYmM0NWNjYWQxM2UiLCJpc3MiOiJodHRwczovL2lmc2Nsb3VkLnRzdW5hbWl0LmNvbS9hdXRoL3JlYWxtcy90c3V0c3QiLCJhdWQiOlsidHN1dHN0IiwiYWNjb3VudCJdLCJzdWIiOiJmMWZlZmUyOS1lZDMwLTRiZTItYTcxOC04N2M5MDlmOTkwMWEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJJRlNfYXVyZW5hIiwic2Vzc2lvbl9zdGF0ZSI6ImU2ZWNlMTkxLTU2NDYtNGM5NC04ZjViLTg1MTgwN2FkMGJiNSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovLyIsImh0dHBzOi8vaWZzLWFwcC5naDRzdnF3NXQydXUzbDJpeXRiMWhnZXNnYi5ieC5pbnRlcm5hbC5jbG91ZGFwcC5uZXQiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgbWljcm9wcm9maWxlLWp3dCBlbWFpbCBhdWRpZW5jZSIsInNpZCI6ImU2ZWNlMTkxLTU2NDYtNGM5NC04ZjViLTg1MTgwN2FkMGJiNSIsInVwbiI6Imlmc2FwcCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJpZnNhcHAifQ.CeSTL_fbT4NqCEghvj3kyfyArGxN6vS6TvTNI0KhqWcKgn_rS2mtBgtvOIcfz8rhtkDplLj0Kmi9042ynieuSPgInFytzJcCNupE6RMog1ah9JlC1nKpprJhl98QTad_gLYPljgxkQOIA-_e1LvDePD712t-IPhLFpfuqkEGeNulfO1LFSWB3O1dKVJBJsnk-WKkecgVRRuMOHCrEQtUXr_O_N0nG1nxym-i1o1sbU4HZso0ekfHRm4eVCsX4EGzv4UJVW8ESze-2T0SODnhBBSgVuGaS2iW2VsFL_ClBCnI0JiS6pn5-NIeUmX7eHNd2T5kxCdr7KmEDqmne3UjUA";
 
     @Autowired
     FunctionalObjectRepo functionalObject;
@@ -37,15 +37,31 @@ public class fixedAssetsImpl implements FixedAssetsService {
         List<FixedAsset> errorList = new ArrayList<>();
 
         try{
-//            System.out.println("Inside the save method");
+            System.out.println("Inside the save method");
             List<FixedAsset> funList = ExcelHelper.excelToFixList(file.getInputStream());
 
-            // validate null fields
-//            errorList = validateRequiredFields(funList);
+//            List<FixedAsset> notNullErrorSet = new ArrayList<>();
+//            //not null check
+//            funList.forEach(
+//                    fun -> {
+//                        if(fun.getCompany()==null || fun.getObjectId()==null || fun.getObjectGroupId()==null || fun.getSite()==null || fun.getAccount() == null || fun.getAcquisitionReason() == null || fun.getDescription() == null) {
+//                            fun.setLog("can't be null");
+//                            notNullErrorSet.add(fun);
+//                        }
+//                    }
+//            );
+//
+//            System.out.println("null error list : " + notNullErrorSet);
+//            //add the null objects to the error list
+//            errorList.addAll(notNullErrorSet);
 //            funList.removeAll(errorList);
 
+            //get the required fields
+            errorList = validateRequiredFields(funList);
+            funList.removeAll(errorList);
+
             //get the valid objId from an api call
-            errorList = validateObjId(funList);
+            errorList.addAll(funList);
             funList.removeAll(errorList);
 
             // remove all invalid object Ids from the list
@@ -173,15 +189,20 @@ public class fixedAssetsImpl implements FixedAssetsService {
     }
 
     private List<FixedAsset> validateRequiredFields(List<FixedAsset> funList) {
+        System.out.println("inside required field validations");
         List<FixedAsset> invalidList = new ArrayList<>();
         for (FixedAsset fixedAsset : funList) {
-            boolean isValid = true;
             if (fixedAsset.getObjectId() == null) {
                 fixedAsset.setLog("Object Id can't be null");
                 invalidList.add(fixedAsset);
             }
             else if (fixedAsset.getCompany() == null) {
                 fixedAsset.setLog("company can't be null");
+                invalidList.add(fixedAsset);
+            }
+            else if (fixedAsset.getDescription() == null) {
+                System.out.println("null description");
+                fixedAsset.setLog("Description can't be null");
                 invalidList.add(fixedAsset);
             }
             else if (fixedAsset.getObjectGroupId() == null) {
@@ -201,11 +222,12 @@ public class fixedAssetsImpl implements FixedAssetsService {
                 invalidList.add(fixedAsset);
             }
         }
+        System.out.println("invalid list : " + invalidList);
         return invalidList;
     }
 
     private List<FixedAsset> validateObjId(List<FixedAsset> funList) {
-        System.out.println("inside validation");
+        System.out.println("inside obj id validation");
         HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
         List<FixedAsset> invalidList = new ArrayList<>();
         for (FixedAsset fixedAsset : funList) {
@@ -228,10 +250,8 @@ public class fixedAssetsImpl implements FixedAssetsService {
                     invalidList.add(fixedAsset);
                 }
             } catch (Exception e) {
-//                for (FixedAsset fun : funList) {
                     fixedAsset.setLog("validate obj id API call failed");
                     invalidList.add(fixedAsset);
-//                }
                 return invalidList;
             }
         }
