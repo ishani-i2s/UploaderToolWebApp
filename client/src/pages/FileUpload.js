@@ -51,10 +51,7 @@ function FileUpload() {
                 'Content-Type': 'multipart/form-data'
             },
             onUploadProgress: (progressEvent) => {
-                const { loaded, total } = progressEvent;
-                let percent = Math.floor((loaded * 100) / total);
-                console.log(`${loaded}kb of ${total}kb | ${percent}%`);
-                setUploadProgress(percent);
+                setUploadProgress(50);
             }
         })
         .then(response => {
@@ -62,6 +59,7 @@ function FileUpload() {
             setRes("Success");
             setError(response.data.errorCount);
             setSuccess(response.data.successCount);
+            setUploadProgress(100);
             console.log(response.data.errorCount);
             console.log(response.data.successCount);
             setResponseReceived(true);

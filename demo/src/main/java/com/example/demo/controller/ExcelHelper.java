@@ -77,7 +77,7 @@ public class ExcelHelper {
                 return String.valueOf(cell.getNumericCellValue());
             }
         } else {
-            return "Unsupported cell type";
+            return null;
         }
     }
 
@@ -122,6 +122,7 @@ public class ExcelHelper {
                 functionalObject.setBelongToObject(getCellValue(row.getCell(9)));
                 functionalObject.setSerialNo(getCellValue(row.getCell(10)));
                 functionalObject.setNote(getCellValue(row.getCell(12)));
+                functionalObject.setFixedAsset(getCellValue(row.getCell(11)));
                 functionalObject.setPartyType(getCellValue(row.getCell(13)));
                 functionalObject.setPartyIdentity(getCellValue(row.getCell(14)));
                 functionalObject.setWorkType(getCellValue(row.getCell(15)));
@@ -157,7 +158,8 @@ public class ExcelHelper {
         header.createCell(12).setCellValue("InstallationDate");
         header.createCell(13).setCellValue("Note");
         header.createCell(14).setCellValue("SerialNo");
-        header.createCell(15).setCellValue("Log");
+        header.createCell(15).setCellValue("Fixed Asset");
+        header.createCell(16).setCellValue("Log");
 
         int rowNum = 1;
         for (FunctionalObject error : errors) {

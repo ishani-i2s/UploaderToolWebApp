@@ -40,7 +40,7 @@ public class functionalObjectImpl implements FunctionalObjectService {
             //not null check
             funList.forEach(
                     fun -> {
-                        if(fun.getSite().isEmpty() || fun.getObjectId().isEmpty() || fun.getObjLevel().isEmpty()) {
+                        if(fun.getSite()==null || fun.getObjectId()==null || fun.getObjLevel()==null) {
                             fun.setLog("Site, Object Id and ObjLevel cannot be null");
                             notNullErrorSet.add(fun);
                         }
@@ -113,7 +113,14 @@ public class functionalObjectImpl implements FunctionalObjectService {
             //remove the invalid calender from the list
             funList.removeAll(errorList);
 
+
             Map<String,Object> defaultValues = getDefaultValues(accessToken);
+
+            //validate the fixed asset
+            errorList.addAll(checkFixedAsset(funList,accessToken,defaultValues));
+
+            //remove the invalid fixed asset from the list
+            funList.removeAll(errorList);
 
             //save the valid functional objects to the database
             functionalObject.saveAll(funList);
@@ -168,6 +175,8 @@ public class functionalObjectImpl implements FunctionalObjectService {
             payload.put("SerialNo", fun.getSerialNo());
             payload.put("SupMchCode", fun.getBelongToObject());
             payload.put("PartNo", fun.getPartNo());
+            payload.put("ObjectCodePart","F");
+            payload.put("ObjectNo", fun.getFixedAsset());
             HttpEntity<Map> httpEntity = new HttpEntity<>(payload, headers);
             System.out.println("The Post Call payload is"+payload);
             System.out.println("HttpEntity is"+httpEntity);
@@ -339,6 +348,53 @@ public class functionalObjectImpl implements FunctionalObjectService {
                 if (!objLevelList.contains(fun.getObjLevel())) {
                     fun.setLog("Invalid ObjLevel");
                     invalidList.add(fun);
+                }
+            }
+
+            //remove the invalid objLevel from the list
+            funList.removeAll(invalidList);
+
+            //compare the level seq of the objLevel and belong to object
+            String objLevelSeq = null;
+            String belongToObjectSeq = null;
+            if(funList.size()!=0){
+                for (FunctionalObject fun : funList) {
+                    String objLevel = fun.getObjLevel();
+                    String belongToObjLevel= null;
+
+                    //get objLevel of belong to object
+                    stringBuilder.setLength(0);
+                    stringBuilder.append(baseURL);
+                    String urlBelongToObject = stringBuilder.append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/EquipmentFunctionalSet?$select=EquipmentObjectSeq,MchCode,ObjLevel,OperationalStatus").toString();
+                    try {
+                        ResponseEntity<Map> responseEntityBelongToObject = restTemplate.exchange(urlBelongToObject, HttpMethod.GET, httpEntity, Map.class);
+                        Map<String, Object> responseMapBelongToObject = responseEntityBelongToObject.getBody();
+                        List<Map<String, Object>> responseListBelongToObject = (List<Map<String, Object>>) responseMapBelongToObject.get("value");
+                        for (Map<String, Object> map : responseListBelongToObject) {
+                            if (map.get("MchCode").equals(fun.getBelongToObject())) {
+                                belongToObjLevel = map.get("ObjLevel").toString();
+                                System.out.println("The belongToObjectLevel is" + belongToObjectSeq);
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("The belong to object API call failed");
+                        fun.setLog("API call failed from belong to object");
+                        invalidList.add(fun);
+                    }
+                    for (Map<String, Object> map : responseList) {
+                        if (map.get("ObjLevel").equals(objLevel)) {
+                            objLevelSeq = map.get("LevelSeq").toString();
+                            System.out.println("The objLevelSeq is" + objLevelSeq);
+                        }
+                        if (map.get("ObjLevel").equals(belongToObjLevel)) {
+                            belongToObjectSeq = map.get("LevelSeq").toString();
+                            System.out.println("The belongToObjectSeq is" + belongToObjectSeq);
+                        }
+                    }
+                    if(Integer.parseInt(objLevelSeq)<=Integer.parseInt(belongToObjectSeq)){
+                        fun.setLog("ObjLevel cannot be less than belong to object");
+                        invalidList.add(fun);
+                    }
                 }
             }
             return invalidList;
@@ -742,6 +798,42 @@ public class functionalObjectImpl implements FunctionalObjectService {
             List<FunctionalObject> invalidList = new ArrayList<>();
             for(FunctionalObject funObj: fun){
                 funObj.setLog("API call failed from calender");
+                invalidList.add(funObj);
+            }
+            return invalidList;
+        }
+    }
+
+    private List<FunctionalObject> checkFixedAsset(List<FunctionalObject> fun,String accessToken, Map<String,Object> defaultValues){
+        String Company = defaultValues.get("Company").toString();
+        System.out.println("The company is asset"+Company);
+        HttpEntity<Void> httpEntity= new HttpEntity<>(gethttpHeaders(accessToken));
+        stringBuilder.setLength(0);
+        stringBuilder.append(baseURL);
+        String url=stringBuilder.append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/Reference_AccountingCodePartValue?$filter=(Company eq '").append(Company).append("' and CodePart eq 'F')").toString();
+        System.out.println("The url is"+url);
+        try{
+            ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Map.class);
+            Map<String, Object> responseMap = responseEntity.getBody();
+            System.out.println("The fixed asset response map is" + responseMap);
+            List<Map<String, Object>> responseList = (List<Map<String, Object>>) responseMap.get("value");
+            List<String> fixedAssetList = new ArrayList<>();
+            for (Map<String, Object> map : responseList) {
+                fixedAssetList.add((String) map.get("CodePartValue"));
+            }
+            List<FunctionalObject> invalidList = new ArrayList<>();
+            for (FunctionalObject funObj : fun) {
+                if (!fixedAssetList.contains(funObj.getFixedAsset())) {
+                    funObj.setLog("Invalid Fixed Asset");
+                    invalidList.add(funObj);
+                }
+            }
+            return invalidList;
+        } catch (Exception e){
+            System.out.println("The fixed asset API call failed");
+            List<FunctionalObject> invalidList = new ArrayList<>();
+            for(FunctionalObject funObj: fun){
+                funObj.setLog("API call failed from fixed asset");
                 invalidList.add(funObj);
             }
             return invalidList;

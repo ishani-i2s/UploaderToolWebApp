@@ -23,5 +23,6 @@ public class FunctionalObject {
     String Note;
     String SerialNo;
     String InstallationDate;
+    String FixedAsset;
     String log;
 }
