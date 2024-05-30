@@ -4,8 +4,10 @@ import DoughnutChart from '../Components/CustomDoughnutChart';
 import ProgressComponent from '../Components/CustomProgressBar';
 import Navbar from '../Components/Navbar';
 import { ProgressBar } from 'react-bootstrap';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
-function FileUpload() {
+function FODownload() {
     const [name, setName] = useState([]);
     const [file, setFile] = useState(null);
     const [res, setRes] = useState([]);
@@ -44,62 +46,46 @@ function FileUpload() {
         }
     }
 
-    const handleFileUpload = () => {
-        setUploadProgress(40);
-        setUploadStarted(true);
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('accessToken', localStorage.getItem('accessToken'));
-        // formData.append('Name', name);
-        axios.post(`${baseURL}/api/excelUpload`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
+    const handleArrayUpload = () => {
+        // insert the input value into the array
+        const objArray = document.getElementById('standard-basic').value.split(',');
+        console.log(objArray);
+
+        // send the array to the server with access token
+        const params = new URLSearchParams();
+        objArray.forEach(id => params.append('objArray', id));
+        params.append('accessToken',localStorage.getItem('accessToken'));
+
+        axios.get(`${baseURL}/api/getInfo?${params.toString()}`, {
+            responseType: 'blob'
         })
         .then(response => {
-            console.log(response);
-            setRes("Success");
-            setError(response.data.errorCount);
-            setSuccess(response.data.successCount);
-            setUploadProgress(100);
-            console.log(response.data.errorCount);
-            console.log(response.data.successCount);
-            setResponseReceived(true);
+           console.log(response);
+           setFile(response);
+           setResponseReceived(true);
         })
-        .catch(err => {
-            console.log(err);
-            setRes(err.message);
-            setUploadComplete(false);
-        })
-    }
-      
-    const handleFileDownload = () => {
-        axios.get(`${baseURL}/api/excelDownload`, { responseType: 'blob' })
-        .then(response => {
-           DownloadFile(response);
-        })
-        .catch(err => {
-            console.log(err);
-            setRes(err.message);
-        })
+        .catch(error => {
+            console.log(error);
+        });
     }
 
-    const setDetails = (e) => {
-        const file = e.target.files[0];
-        setName(file.name);
-        setFile(file);
+    const handleFileDownload = () => {
+        DownloadFile(file);
     }
   
     return (
         <div className='home-container'>
         <Navbar />
         <center>
-        <h1 className='text-4xl text-blue-400 p-4'>File Upload To Server</h1>
-            <input type="file" onChange={setDetails} />
+        <h1 className='text-4xl text-blue-400 p-4'>Download functional object information</h1>
+        {/* textfield */}
+        
         <br />
-
-        <button className="bg-sky-400 p-2 rounded-lg" onClick={handleFileUpload}>
-            Upload File
+        <p>Enter the object IDs as comma separated set of values</p>
+        <TextField id="standard-basic" label="Object ID" variant="filled" className='mb-5' />
+        <br />
+        <button className="bg-sky-400 p-2 rounded-lg" onClick={handleArrayUpload}>
+           Send Object ID
         </button>
 
         <br /> 
@@ -118,14 +104,14 @@ function FileUpload() {
         <hr />
         <br />
 
-        {error>0 && (
+        {responseReceived>0 && (
             <>
-                <p className="text-red-500">There are few errors in the file. Please download the error file and correct the errors.</p>
+                <p className="text-green-500">Download the functional object Details from here.</p>
                 <button className="bg-sky-400 p-2 rounded-lg" onClick={handleFileDownload}>
-                    Download Error File
+                    Download
                 </button>
             </>
-        )} 
+        )}
 
         </center>
 
@@ -136,4 +122,4 @@ function FileUpload() {
     );
 }
 
-export default FileUpload;
+export default FODownload;

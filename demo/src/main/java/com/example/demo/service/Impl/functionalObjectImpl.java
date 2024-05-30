@@ -852,4 +852,122 @@ public class functionalObjectImpl implements FunctionalObjectService {
     public List<FunctionalObject> findAll() {
         return List.of();
     }
+
+    public List<FunctionalObject> getAll(List<Integer> ids, String accessToken){
+        //get the EquipmentObjectSeq
+        List<FunctionalObject> funList = new ArrayList<>();
+        for (Integer id : ids) {
+            Integer equipmentObjectSeq =retreiveData(id,accessToken);
+            //get the functional object details
+            FunctionalObject fun = new FunctionalObject();
+            if(equipmentObjectSeq!=null) {
+                HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
+                stringBuilder.setLength(0);
+                stringBuilder.append(baseURL);
+                String url = stringBuilder.append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/EquipmentFunctionalSet(EquipmentObjectSeq=").append(equipmentObjectSeq).append(")").toString();
+                System.out.println("The url is" + url);
+                try {
+                    ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Map.class);
+                    Map<String, Object> responseList = responseEntity.getBody();
+                    fun.setObjectId((String) responseList.get("MchCode"));
+                    fun.setDescription((String) responseList.get("MchName"));
+                    fun.setSite((String) responseList.get("Contract"));
+                    fun.setObjLevel((String) responseList.get("ObjLevel"));
+                    fun.setItemClass((String) responseList.get("ItemClassId"));
+                    fun.setPartNo((String) responseList.get("PartNo"));
+                    fun.setInstallationDate((String) responseList.get("ProductionDate"));
+                    fun.setLocationId((String) responseList.get("LocationId"));
+                    fun.setBelongToObject((String) responseList.get("SupMchCode"));
+                    fun.setSerialNo((String) responseList.get("SerialNo"));
+                    fun.setNote((String) responseList.get("Note"));
+                    fun.setFixedAsset((String) responseList.get("ObjectNo"));
+                    fun.setLog("Successfull");
+                    funList.add(fun);
+                    System.out.println("The functional object is" + fun);
+
+                    //get party type and party identity
+//                    stringBuilder.setLength(0);
+//                    stringBuilder.append(baseURL);
+//                    String urlParty = stringBuilder.append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/EquipmentFunctionalSet(EquipmentObjectSeq=").append(equipmentObjectSeq).append(")/EquipmentObjectPartyArray").toString();
+//                    try {
+//                        ResponseEntity<Map> responseEntityParty = restTemplate.exchange(urlParty, HttpMethod.GET, httpEntity, Map.class);
+//                        System.out.println("The party type and party identity response map is" + responseEntityParty.getBody());
+//                        Map<String, Object> responseMapParty = responseEntityParty.getBody();
+//                        List<Map<String, Object>> responseListParty = (List<Map<String, Object>>) responseMapParty.get("value");
+//                        for (Map<String, Object> map : responseListParty) {
+//                            FunctionalObject funParty = fun;
+//                            //add the previous funlist details
+//                            funParty.setPartyType((String) map.get("PartyType"));
+//                            funParty.setPartyIdentity((String) map.get("Identity"));
+//                            System.out.println("The party type is" + map.get("PartyType"));
+//                            System.out.println("The party identity is" + map.get("Identity"));
+//                            System.out.println("The location id is" + map.get("DeliveryAddress"));
+////                            funList.add(funParty);
+//                        }
+//
+//                        //get the work type
+//                        stringBuilder.setLength(0);
+//                        stringBuilder.append(baseURL);
+//                        String urlWorkType = stringBuilder.append("/main/ifsapplications/projection/v1/SvcschFunctionalObjectSchedulingDetailHandling.svc/FunctionalObjectDetailSet(EquipmentObjectSeq=").append(equipmentObjectSeq).append(")/ObjectAvailabilityDetailArray").toString();
+//                        try {
+//                            ResponseEntity<Map> responseEntityWorkType = restTemplate.exchange(urlWorkType, HttpMethod.GET, httpEntity, Map.class);
+//                            System.out.println("The work type response map is" + responseEntityWorkType.getBody());
+//                            Map<String, Object> responseMapWorkType = responseEntityWorkType.getBody();
+//                            List<Map<String, Object>> responseListWorkType = (List<Map<String, Object>>) responseMapWorkType.get("value");
+//                            for (Map<String, Object> map : responseListWorkType) {
+//                                FunctionalObject funWorkType = fun;
+//                                //add the previous funlist details
+//                                funWorkType.setCalender((String) map.get("CalendarId"));
+//                                funWorkType.setWorkType((String) map.get("WorkType"));
+//                                System.out.println("The calender is" + map.get("CalendarId"));
+//                                System.out.println("The work type is" + map.get("WorkType"));
+////                                funList.add(funWorkType);
+//                            }
+//                        } catch (Exception e) {
+//                            System.out.println("The work type API call failed");
+//                            fun.setLog("API call failed from work type");
+//                            funList.add(fun);
+//                        }
+//                    } catch (Exception e) {
+//                        System.out.println("The party type and party identity API call failed");
+//                        fun.setLog("API call failed from party type and party identity");
+//                        funList.add(fun);
+//                    }
+
+                } catch (Exception e) {
+                    System.out.println("API call failed for id" + id);
+                }
+
+            }else{
+                System.out.println("The equipment object seq is null");
+                fun.setObjectId(String.valueOf(id));
+                fun.setLog("Object Id does not exist");
+                funList.add(fun);
+            }
+        }
+        return funList;
+    }
+
+    public Integer retreiveData(int id,String accessToken) {
+        HttpEntity<Void> httpEntity= new HttpEntity<>(gethttpHeaders(accessToken));
+        stringBuilder.setLength(0);
+        stringBuilder.append(baseURL);
+        String url=stringBuilder.append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/EquipmentFunctionalSet?$filter=(MchCode eq '").append(id).append("')&$select=EquipmentObjectSeq,MchCode&$skip=0&$top=25").toString();
+        System.out.println("The url is"+url);
+        try {
+            ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Map.class);
+            Map<String, Object> responseMap = responseEntity.getBody();
+//            System.out.println("The response map is" + responseMap);
+            List<Map<String, Object>> responseList = (List<Map<String, Object>>) responseMap.get("value");
+            List<Integer> equipmentObjectSeqList = new ArrayList<>();
+            for (Map<String, Object> map : responseList) {
+                equipmentObjectSeqList.add((Integer) map.get("EquipmentObjectSeq"));
+            }
+            return equipmentObjectSeqList.get(0);
+        } catch (Exception e) {
+//            System.out.println("The API call failed");
+            return null;
+        }
+
+    }
 }

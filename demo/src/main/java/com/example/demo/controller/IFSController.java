@@ -25,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class IFSController {
     @Autowired
     FunctionalObjectService functionalObject;
@@ -57,6 +57,29 @@ public class IFSController {
     @GetMapping("/excelDownload")
     public ResponseEntity<Resource> downloadExcel() {
         String filePath = "src/main/resources/static/functionalObjectErrors.xls";
+        File file = new File(filePath);
+        Path path = Paths.get(filePath);
+        Resource resource = null;
+        try {
+            resource = new FileSystemResource(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+    @GetMapping("/getInfo")
+    public ResponseEntity<Resource> sendFODetails(@RequestParam("objArray") List<Integer> objectIds, @RequestParam("accessToken") String accessToken){
+        System.out.println("The objectIds are"+objectIds);
+        List<FunctionalObject> response = functionalObject.getAll(objectIds,accessToken);
+        System.out.println("The response is"+response);
+//
+        ExcelHelper.saveToExcel(response);
+
+        String filePath = "src/main/resources/static/functionalObjectDetail.xls";
         File file = new File(filePath);
         Path path = Paths.get(filePath);
         Resource resource = null;
