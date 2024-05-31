@@ -44,7 +44,7 @@ function FixedAssets() {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('Name', name);
-        axios.post(`${baseURL}/api/excelUpload`, formData, {
+        axios.post(`${baseURL}/api/excelUploadFA`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
