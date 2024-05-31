@@ -18,7 +18,7 @@ import java.util.*;
 
 @Service
 public class functionalObjectImpl implements FunctionalObjectService {
-    String baseURL="https://pemuto8-dev1.build.ifs.cloud";
+    String baseURL="https://ifscloud.tsunamit.com";
     StringBuilder stringBuilder=new StringBuilder(baseURL);
 //    String accessToken= "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVdWtEM044dVFiMkgyOGZBNFRnWGh4b1JmMElXMUNkTXV0cjlLbDRKbmpJIn0.eyJleHAiOjE3MTUxNTUxNTEsImlhdCI6MTcxNTE1MTU1MSwiYXV0aF90aW1lIjoxNzE1MTUxNTQ5LCJqdGkiOiJiNTkxZmNiMS00ZjlkLTRjZTYtYmU3Zi02YzJkY2ZjYTFiYmIiLCJpc3MiOiJodHRwczovL2lmc2Nsb3VkLnRzdW5hbWl0LmNvbS9hdXRoL3JlYWxtcy90c3V0c3QiLCJhdWQiOlsidHN1dHN0IiwiYWNjb3VudCJdLCJzdWIiOiJmMjJhOTYwNy04NzNjLTRjZWYtOGEzMi0xODE5NjdlMWRmZjUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJJRlNfYXVyZW5hIiwic2Vzc2lvbl9zdGF0ZSI6IjkwMjkyNDk5LTgyN2UtNDUwOC05ZjlkLTYxZTdkNjFhYWMxOSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovLyIsImh0dHBzOi8vaWZzLWFwcC5naDRzdnF3NXQydXUzbDJpeXRiMWhnZXNnYi5ieC5pbnRlcm5hbC5jbG91ZGFwcC5uZXQiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgbWljcm9wcm9maWxlLWp3dCBlbWFpbCBhdWRpZW5jZSIsInNpZCI6IjkwMjkyNDk5LTgyN2UtNDUwOC05ZjlkLTYxZTdkNjFhYWMxOSIsInVwbiI6Im5hZGVlc2hhbiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJuYWRlZXNoYW4iLCJlbWFpbCI6Im5hZGVlc2hhLm5AY3JlYXRpdmVzb2Z0d2FyZS5jb20ifQ.U2jGmc2Vl9Z9ZD-f4RrBt7hVNzoXyR8H6QtG3c9gjJbp25bbzq4XmTN7FKGraZIVe_9_dsFSZStJxPA8lr6zVICqQZwCSGclEidrB7fViPLn0ouFAcXpdoxi6WAeGAJS0iL7q2aJ43ida0NPr4ECXuPCwYrRCQHaoV733r_zQPgY053FiXySdA0_kcBxCv3henf7qsOKZqh_ElEKZZwJYnb2AH-agMoLd6m6pqfe4mcrYq2dIrKFM4PV8QALxnCMR0TZ6xBPjdcJ6B__zGmBL6WW6ktnXNfiuCPI6_TAzhdZR49RGLcliPpcNPikKi0PY5GFhi-DXFkFl-s44rtzxg";
     @Autowired
@@ -332,6 +332,7 @@ public class functionalObjectImpl implements FunctionalObjectService {
         stringBuilder.setLength(0);
         stringBuilder.append(baseURL);
         String url=stringBuilder.append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/Reference_EquipmentObjectLevel").toString();
+        System.out.println("The url is"+url);
         try{
             ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Map.class);
             Map<String, Object> responseMap = responseEntity.getBody();
@@ -443,6 +444,7 @@ public class functionalObjectImpl implements FunctionalObjectService {
         stringBuilder.setLength(0);
         stringBuilder.append(baseURL);
         String url=stringBuilder.append("/main/ifsapplications/projection/v1/FunctionalObjectHandling.svc/Reference_ItemClass?$filter=(Objstate eq IfsApp.FunctionalObjectHandling.ItemClassState'Active')").toString();
+        System.out.println("The item class url is"+url);
         try{
             ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Map.class);
             Map<String, Object> responseMap = responseEntity.getBody();

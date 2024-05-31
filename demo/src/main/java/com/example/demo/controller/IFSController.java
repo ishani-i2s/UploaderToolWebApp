@@ -37,7 +37,7 @@ public class IFSController {
 
     @PostMapping("/excelUpload")
     public ResponseEntity<?> uploadExcel(@RequestParam("file") MultipartFile file,@RequestParam("accessToken") String accessToken){
-        System.out.println("The file is"+file);
+        System.out.println("Token is"+accessToken);
         if(ExcelHelper.hasExcelFormat(file)){
             try {
                 List<FunctionalObject> errors=functionalObject.save(file,accessToken);
