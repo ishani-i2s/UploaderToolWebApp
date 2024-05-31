@@ -19,7 +19,6 @@
 import './App.css';
 import './index.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import FileUpload from './pages/FileUpload';
 import FODownload from './pages/FunctionalObjectDownload';
 import Home from './pages/Home';

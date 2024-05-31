@@ -59,11 +59,11 @@ function TaskDetailsUpdate() {
         .then(response => {
             console.log(response);
             setRes("Success");
-            setError(response.data.errorCount);
-            setSuccess(response.data.successCount);
+            // setError(response.data.errorCount);
+            // setSuccess(response.data.successCount);
             setUploadProgress(100);
-            console.log(response.data.errorCount);
-            console.log(response.data.successCount);
+            // console.log(response.data.errorCount);
+            // console.log(response.data.successCount);
             setResponseReceived(true);
         })
         .catch(err => {
