@@ -2,18 +2,14 @@ import { useState } from 'react';
 import axios from 'axios';
 import DoughnutChart from '../Components/CustomDoughnutChart';
 import ProgressComponent from '../Components/CustomProgressBar';
-import Navbar from '../Components/Navbar';
-import { ProgressBar } from 'react-bootstrap';
 
-function FileUpload() {
+function FixedAssets() {
     const [name, setName] = useState([]);
     const [file, setFile] = useState(null);
     const [res, setRes] = useState([]);
     const [error, setError] = useState([]);
     const [success, setSuccess] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
-    const [uploadStarted, setUploadStarted] = useState(false);
-    const [uploadComplete, setUploadComplete] = useState(false);
     const [responseReceived, setResponseReceived] = useState(false);
 
 
@@ -45,23 +41,25 @@ function FileUpload() {
     }
 
     const handleFileUpload = () => {
-        setUploadProgress(40);
-        setUploadStarted(true);
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('accessToken', localStorage.getItem('accessToken'));
-        // formData.append('Name', name);
+        formData.append('Name', name);
         axios.post(`${baseURL}/api/excelUpload`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
+            onUploadProgress: (progressEvent) => {
+                const { loaded, total } = progressEvent;
+                let percent = Math.floor((loaded * 100) / total);
+                console.log(`${loaded}kb of ${total}kb | ${percent}%`);
+                setUploadProgress(percent);
+            }
         })
         .then(response => {
             console.log(response);
             setRes("Success");
             setError(response.data.errorCount);
             setSuccess(response.data.successCount);
-            setUploadProgress(100);
             console.log(response.data.errorCount);
             console.log(response.data.successCount);
             setResponseReceived(true);
@@ -69,7 +67,6 @@ function FileUpload() {
         .catch(err => {
             console.log(err);
             setRes(err.message);
-            setUploadComplete(false);
         })
     }
       
@@ -91,11 +88,12 @@ function FileUpload() {
     }
   
     return (
-        <div className='home-container'>
-        <Navbar />
-        <center>
+        <div className="App">
         <h1 className='text-4xl text-blue-400 p-4'>File Upload To Server</h1>
+        <center>
             <input type="file" onChange={setDetails} />
+        </center>
+
         <br />
 
         <button className="bg-sky-400 p-2 rounded-lg" onClick={handleFileUpload}>
@@ -105,14 +103,8 @@ function FileUpload() {
         <br /> 
         <br />
 
-        {uploadStarted && (
-            <ProgressBar now={uploadProgress} label={`${uploadProgress}%`} style={{ width: '400px' }} />
-        )}
-
-        {uploadComplete && (
-            <center>
-                <h5>File uploaded successfully!</h5>
-            </center>
+        {uploadProgress > 0 && (
+            <ProgressComponent uploading={!responseReceived} responseReceived={responseReceived} />
         )}
 
         <hr />
@@ -127,8 +119,6 @@ function FileUpload() {
             </>
         )} 
 
-        </center>
-
         {res === "Success" && (
            <DoughnutChart data={donutChart.chart1}/>
         )}        
@@ -136,4 +126,4 @@ function FileUpload() {
     );
 }
 
-export default FileUpload;
+export default FixedAssets;
