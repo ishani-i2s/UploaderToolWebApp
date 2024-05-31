@@ -5,7 +5,7 @@ import ProgressComponent from '../Components/CustomProgressBar';
 import Navbar from '../Components/Navbar';
 import { ProgressBar } from 'react-bootstrap';
 
-function FileUpload() {
+function TaskDetailsUpdate() {
     const [name, setName] = useState([]);
     const [file, setFile] = useState(null);
     const [res, setRes] = useState([]);
@@ -23,9 +23,9 @@ function FileUpload() {
         const contentDispositionHeader = response.headers['content-disposition'];
         const fileName = contentDispositionHeader
             ? contentDispositionHeader.split('filename=')[1].trim()
-            : 'downloadedFile.xls';
+            : 'downloadedFile.xlsx';
     
-        const blob = new Blob([response.data], { type: 'application/vnd.ms-excel' });
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -51,7 +51,7 @@ function FileUpload() {
         formData.append('file', file);
         formData.append('accessToken', localStorage.getItem('accessToken'));
         // formData.append('Name', name);
-        axios.post(`${baseURL}/api/excelUpload`, formData, {
+        axios.post(`${baseURL}/api/TaskDetailsUpdate`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
@@ -94,7 +94,7 @@ function FileUpload() {
         <div className='home-container'>
         <Navbar />
         <center>
-        <h1 className='text-4xl text-blue-400 p-4'>File Upload To Server</h1>
+        <h1 className='text-4xl text-blue-400 p-4'>Update Task Details</h1>
             <input type="file" onChange={setDetails} />
         <br />
 
@@ -136,4 +136,4 @@ function FileUpload() {
     );
 }
 
-export default FileUpload;
+export default TaskDetailsUpdate;

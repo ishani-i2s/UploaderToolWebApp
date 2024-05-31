@@ -27,7 +27,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class IFSController {
     @Autowired
     FunctionalObjectService functionalObject;
@@ -36,11 +36,11 @@ public class IFSController {
     FixedAssetsService fixedAssets;
 
     @PostMapping("/excelUpload")
-    public ResponseEntity<?> uploadExcel(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadExcel(@RequestParam("file") MultipartFile file,@RequestParam("accessToken") String accessToken){
         System.out.println("The file is"+file);
         if(ExcelHelper.hasExcelFormat(file)){
             try {
-                List<FunctionalObject> errors=functionalObject.save(file);
+                List<FunctionalObject> errors=functionalObject.save(file,accessToken);
                 ExcelHelper.writeToExcel(errors);
                 int successCount = 0;
                 for(FunctionalObject error:errors){
@@ -102,19 +102,27 @@ public class IFSController {
                 .body(resource);
     }
 
-    private void refreshResourceCache() {
-        try {
-            // Get the path to the static folder
-            Path staticFolderPath = Paths.get(getClass().getClassLoader().getResource("static").toURI());
+    @GetMapping("/getInfo")
+    public ResponseEntity<Resource> sendFODetails(@RequestParam("objArray") List<Integer> objectIds, @RequestParam("accessToken") String accessToken){
+        System.out.println("The objectIds are"+objectIds);
+        List<FunctionalObject> response = functionalObject.getAll(objectIds,accessToken);
+        System.out.println("The response is"+response);
+//
+        ExcelHelper.saveToExcel(response);
 
-            // Walk through the static folder and mark all files for deletion on exit
-            Files.walk(staticFolderPath).forEach(path -> {
-                if (!Files.isDirectory(path)) {
-                    path.toFile().deleteOnExit();
-                }
-            });
+        String filePath = "src/main/resources/static/functionalObjectDetail.xls";
+        File file = new File(filePath);
+        Path path = Paths.get(filePath);
+        Resource resource = null;
+        try {
+            resource = new FileSystemResource(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
+
 }
