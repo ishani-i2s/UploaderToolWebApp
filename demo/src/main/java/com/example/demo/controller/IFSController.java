@@ -60,11 +60,11 @@ public class IFSController {
     }
 
     @PostMapping("/excelUploadFA")
-    public ResponseEntity<?> uploadExcelFA(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadExcelFA(@RequestParam("file") MultipartFile file, @RequestParam("accessToken") String accessToken) {
         System.out.println("The file is"+file);
         if(ExcelHelper.hasExcelFormat(file)){
             try {
-                List<FixedAsset> errors=fixedAssets.save(file);
+                List<FixedAsset> errors=fixedAssets.save(file,accessToken);
                 ExcelHelper.writeToExcelFA(errors);
                 int successCount = 0;
                 for(FixedAsset error:errors){

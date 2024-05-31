@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class fixedAssetsImpl implements FixedAssetsService {
     String baseURL="https://ifscloud.tsunamit.com/";
     StringBuilder stringBuilder=new StringBuilder(baseURL);
-    String accessToken= "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJVdWtEM044dVFiMkgyOGZBNFRnWGh4b1JmMElXMUNkTXV0cjlLbDRKbmpJIn0.eyJleHAiOjE3MTY4ODA2NzgsImlhdCI6MTcxNjg3NzA3OCwiYXV0aF90aW1lIjoxNzE2ODcwNjAyLCJqdGkiOiIzZWZjNzUzOC00NTQwLTQ2NTMtOWI2Yy1kYmM0NWNjYWQxM2UiLCJpc3MiOiJodHRwczovL2lmc2Nsb3VkLnRzdW5hbWl0LmNvbS9hdXRoL3JlYWxtcy90c3V0c3QiLCJhdWQiOlsidHN1dHN0IiwiYWNjb3VudCJdLCJzdWIiOiJmMWZlZmUyOS1lZDMwLTRiZTItYTcxOC04N2M5MDlmOTkwMWEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJJRlNfYXVyZW5hIiwic2Vzc2lvbl9zdGF0ZSI6ImU2ZWNlMTkxLTU2NDYtNGM5NC04ZjViLTg1MTgwN2FkMGJiNSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovLyIsImh0dHBzOi8vaWZzLWFwcC5naDRzdnF3NXQydXUzbDJpeXRiMWhnZXNnYi5ieC5pbnRlcm5hbC5jbG91ZGFwcC5uZXQiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgbWljcm9wcm9maWxlLWp3dCBlbWFpbCBhdWRpZW5jZSIsInNpZCI6ImU2ZWNlMTkxLTU2NDYtNGM5NC04ZjViLTg1MTgwN2FkMGJiNSIsInVwbiI6Imlmc2FwcCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtdHN1dHN0Iiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJpZnNhcHAifQ.CeSTL_fbT4NqCEghvj3kyfyArGxN6vS6TvTNI0KhqWcKgn_rS2mtBgtvOIcfz8rhtkDplLj0Kmi9042ynieuSPgInFytzJcCNupE6RMog1ah9JlC1nKpprJhl98QTad_gLYPljgxkQOIA-_e1LvDePD712t-IPhLFpfuqkEGeNulfO1LFSWB3O1dKVJBJsnk-WKkecgVRRuMOHCrEQtUXr_O_N0nG1nxym-i1o1sbU4HZso0ekfHRm4eVCsX4EGzv4UJVW8ESze-2T0SODnhBBSgVuGaS2iW2VsFL_ClBCnI0JiS6pn5-NIeUmX7eHNd2T5kxCdr7KmEDqmne3UjUA";
+//    String accessToken= "";
 
     @Autowired
     FunctionalObjectRepo functionalObject;
@@ -33,54 +33,38 @@ public class fixedAssetsImpl implements FixedAssetsService {
     private RestTemplate restTemplate;
 
     @Override
-    public List<FixedAsset> save(MultipartFile file) {
+    public List<FixedAsset> save(MultipartFile file, String accessToken) {
         List<FixedAsset> errorList = new ArrayList<>();
 
         try{
             System.out.println("Inside the save method");
             List<FixedAsset> funList = ExcelHelper.excelToFixList(file.getInputStream());
 
-//            List<FixedAsset> notNullErrorSet = new ArrayList<>();
-//            //not null check
-//            funList.forEach(
-//                    fun -> {
-//                        if(fun.getCompany()==null || fun.getObjectId()==null || fun.getObjectGroupId()==null || fun.getSite()==null || fun.getAccount() == null || fun.getAcquisitionReason() == null || fun.getDescription() == null) {
-//                            fun.setLog("can't be null");
-//                            notNullErrorSet.add(fun);
-//                        }
-//                    }
-//            );
-//
-//            System.out.println("null error list : " + notNullErrorSet);
-//            //add the null objects to the error list
-//            errorList.addAll(notNullErrorSet);
-//            funList.removeAll(errorList);
-
             //get the required fields
             errorList = validateRequiredFields(funList);
             funList.removeAll(errorList);
 
             //get the valid objId from an api call
-            errorList.addAll(funList);
+            errorList.addAll(validateObjId(funList,accessToken));
             funList.removeAll(errorList);
 
             // remove all invalid object Ids from the list
-            errorList.addAll(checkObjIdExist(funList));
+            errorList.addAll(checkObjIdExist(funList,accessToken));
             funList.removeAll(errorList);
 
             // remove all invalid object groups from the list
-            errorList.addAll(checkObjectGroup(funList));
+            errorList.addAll(checkObjectGroup(funList,accessToken));
             funList.removeAll(errorList);
 
             // remove all invalid accounts from the list
-            errorList.addAll(validateAccount(funList));
+            errorList.addAll(validateAccount(funList,accessToken));
             funList.removeAll(errorList);
 
             // remove all invalid sites from the list
-            errorList.addAll(validateSite(funList));
+            errorList.addAll(validateSite(funList,accessToken));
             funList.removeAll(errorList);
 
-            setValidDates(funList);
+            setValidDates(funList,accessToken);
 
             //save the valid functional objects to the database
 //            fixedAssets.saveAll(funList);
@@ -88,7 +72,7 @@ public class fixedAssetsImpl implements FixedAssetsService {
             if(funList.size()==0){
                 return errorList;
             }else{
-                List<FixedAsset> postStatus= postFixedAsset(funList);
+                List<FixedAsset> postStatus= postFixedAsset(funList,accessToken);
                 System.out.println("The post status is"+postStatus);
                 if(postStatus.size()>0){
                     errorList.addAll(postStatus);
@@ -102,15 +86,14 @@ public class fixedAssetsImpl implements FixedAssetsService {
         }
     }
 
-    private List<FixedAsset> postFixedAsset(List<FixedAsset> funList) {
+    private List<FixedAsset> postFixedAsset(List<FixedAsset> funList, String accessToken) {
         System.out.println("Inside the post Fixed assets method");
-        HttpHeaders headers = gethttpHeaders();
+        HttpHeaders headers = gethttpHeaders(accessToken);
         List<FixedAsset> invalidList = new ArrayList<>();
 
         for (FixedAsset fun : funList) {
             stringBuilder.setLength(0);  // Clear StringBuilder for each iteration
             String url = stringBuilder.append(baseURL).append("/main/ifsapplications/projection/v1/ObjectHandling.svc/FaObjectSet").toString();
-            System.out.println("The url is " + url);
 
             Map<String, Object> payload = new java.util.HashMap<>();
             payload.put("Company", fun.getCompany());
@@ -134,7 +117,7 @@ public class fixedAssetsImpl implements FixedAssetsService {
                     System.out.println("fixed assets created");
 
                     // Process books for the valid fixed asset
-                    List<FixedAsset> errorListBook = processBooks(fun);
+                    List<FixedAsset> errorListBook = processBooks(fun,accessToken);
                     if (!errorListBook.isEmpty()) {
                         invalidList.addAll(errorListBook);
                     }
@@ -155,24 +138,24 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    private List<FixedAsset> processBooks(FixedAsset fixedAsset) {
+    private List<FixedAsset> processBooks(FixedAsset fixedAsset, String accessToken) {
         List<FixedAsset> errorListBook = new ArrayList<>();
         // Remove all invalid book Ids from the list
-        errorListBook.addAll(validateBookId(Collections.singletonList(fixedAsset)));
+        errorListBook.addAll(validateBookId(Collections.singletonList(fixedAsset),accessToken));
         if (!errorListBook.isEmpty()) return errorListBook;
 
         // Remove all invalid depreciation methods from the list
-        errorListBook.addAll(validateDepreciationMethod(Collections.singletonList(fixedAsset)));
+        errorListBook.addAll(validateDepreciationMethod(Collections.singletonList(fixedAsset),accessToken));
         if (!errorListBook.isEmpty()) return errorListBook;
 
         // Remove all invalid Estimated Life from the list
-        errorListBook.addAll(validateEstimatedLife(Collections.singletonList(fixedAsset)));
+        errorListBook.addAll(validateEstimatedLife(Collections.singletonList(fixedAsset),accessToken));
         if (!errorListBook.isEmpty()) return errorListBook;
 
         System.out.println("set book values");
-        setBookValues(Collections.singletonList(fixedAsset));
+        setBookValues(Collections.singletonList(fixedAsset),accessToken);
 
-        return postFixedAssetBook(fixedAsset);
+        return postFixedAssetBook(fixedAsset,accessToken);
     }
 
     private String extractErrorMessageFromJson(String errorResponse) {
@@ -226,9 +209,9 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    private List<FixedAsset> validateObjId(List<FixedAsset> funList) {
+    private List<FixedAsset> validateObjId(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside obj id validation");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
         for (FixedAsset fixedAsset : funList) {
             stringBuilder.setLength(0);
@@ -258,15 +241,19 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    private List<FixedAsset> checkObjIdExist(List<FixedAsset> funList) {
+    private List<FixedAsset> checkObjIdExist(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside object exist validation");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
+        System.out.println("fixed asset count : " + fixedAssets.count());
+        System.out.println("fixed assets : " + fixedAssets);
+        System.out.println();
         for (FixedAsset fixedAsset : funList) {
             stringBuilder.setLength(0);
             stringBuilder.append(baseURL);
             String url = stringBuilder.append(String.format("/main/ifsapplications/projection/v1/ObjectHandling.svc/Reference_FaObject?$filter=Company eq '%s' and ObjectId eq '%s'", fixedAsset.getCompany(), fixedAsset.getObjectId())).toString();
             System.out.println("URL: " + url);
+            System.out.println("check ID URL : " + url);
 
             try {
                 ResponseEntity<Map> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Map.class);
@@ -292,9 +279,9 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    private List<FixedAsset> checkObjectGroup(List<FixedAsset> funList) {
+    private List<FixedAsset> checkObjectGroup(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside validation");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
         for (FixedAsset fixedAsset : funList) {
             stringBuilder.setLength(0);
@@ -329,9 +316,9 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    public List<FixedAsset> validateAccount(List<FixedAsset> funList) {
+    public List<FixedAsset> validateAccount(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside account validation");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
         for (FixedAsset fixedAsset : funList) {
             stringBuilder.setLength(0);
@@ -364,9 +351,9 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    private List<FixedAsset> validateSite(List<FixedAsset> funList) {
+    private List<FixedAsset> validateSite(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside site validation");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
         for (FixedAsset fixedAsset : funList) {
             stringBuilder.setLength(0);
@@ -403,9 +390,9 @@ public class fixedAssetsImpl implements FixedAssetsService {
 
     // create books
 
-    private List<FixedAsset> validateBookId(List<FixedAsset> funList) {
+    private List<FixedAsset> validateBookId(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside book Id validation");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
 
         for (FixedAsset fixedAsset : funList) {
@@ -451,9 +438,9 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    private List<FixedAsset> validateDepreciationMethod(List<FixedAsset> funList) {
+    private List<FixedAsset> validateDepreciationMethod(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside depreciation method validation");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
         for (FixedAsset fixedAsset : funList) {
             stringBuilder.setLength(0);
@@ -486,9 +473,9 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    private List<FixedAsset> validateEstimatedLife(List<FixedAsset> funList) {
+    private List<FixedAsset> validateEstimatedLife(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside estimated life validation");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
 
         for (FixedAsset fixedAsset : funList) {
@@ -598,11 +585,11 @@ public class fixedAssetsImpl implements FixedAssetsService {
 //        return invalidList;
 //    }
 
-    private List<FixedAsset> postFixedAssetBook(FixedAsset fixedAsset) {
+    private List<FixedAsset> postFixedAssetBook(FixedAsset fixedAsset, String accessToken) {
         System.out.println("Inside the post Fixed assets book method");
 //        System.out.println("The functional object list is"+funList);
         List<FixedAsset> invalidList= new ArrayList<>();
-        HttpHeaders headers= gethttpHeaders();
+        HttpHeaders headers= gethttpHeaders(accessToken);
             stringBuilder.setLength(0);
             stringBuilder.append(baseURL);
             String url = stringBuilder.append(String.format("/main/ifsapplications/projection/v1/ObjectHandling.svc/FaObjectSet(Company='%s',ObjectId='%s')/FaBookPerObjectArray", fixedAsset.getCompany(), fixedAsset.getObjectId())).toString();
@@ -650,8 +637,8 @@ public class fixedAssetsImpl implements FixedAssetsService {
         return invalidList;
     }
 
-    private void setBookValues(List<FixedAsset> funList) {
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+    private void setBookValues(List<FixedAsset> funList, String accessToken) {
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
 
         for (FixedAsset fixedAsset : funList) {
@@ -692,10 +679,10 @@ public class fixedAssetsImpl implements FixedAssetsService {
         }
     }
 
-    private void setValidDates(List<FixedAsset> funList) {
+    private void setValidDates(List<FixedAsset> funList, String accessToken) {
         System.out.println("inside set valid dates");
         System.out.println("valid list : " + funList + " list count : " + funList.size());
-        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders());
+        HttpEntity<Void> httpEntity = new HttpEntity<>(gethttpHeaders(accessToken));
         List<FixedAsset> invalidList = new ArrayList<>();
 
         for (FixedAsset fixedAsset : funList) {
@@ -739,7 +726,7 @@ public class fixedAssetsImpl implements FixedAssetsService {
         }
     }
 
-    private HttpHeaders gethttpHeaders() {
+    private HttpHeaders gethttpHeaders(String accessToken) {
         HttpHeaders headers= new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);
