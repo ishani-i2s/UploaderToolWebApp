@@ -59,7 +59,7 @@ public class RouteChangeCotroller {
         System.out.println("The file is"+file);
         if(ExcelHelper.hasExcelFormat(file)){
             try {
-                List<TaskDetails> details=routeChangeService.updateTaskDetails(file,accessToken);
+                List<TaskDetails> details=routeChangeService.save(file,accessToken);
                 System.out.println("The details are"+details);
                 return null;
             } catch (Exception e) {
