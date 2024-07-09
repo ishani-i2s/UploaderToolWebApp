@@ -39,7 +39,7 @@ public class RouteChangeCotroller {
 
         ExcelHelper.taskDetailsToExcel(taskDetails);
 
-        String filePath = "src/main/resources/static/taskDetails.xlsx";
+        String filePath = "src/main/resources/static/taskDetails.xls";
         File file = new File(filePath);
         Path path = Paths.get(filePath);
         Resource resource = null;

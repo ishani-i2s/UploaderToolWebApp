@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,15 @@ public class routeChangesImpl implements RouteChangeService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private RestTemplate restTemplatePatch;
+
+
+
+//    @Autowired
+//    private RestTemplate restPatchTemplate;
+
 
     @Override
     public List<TaskDetails> save(MultipartFile file, String accessToken) {
@@ -245,7 +255,14 @@ public class routeChangesImpl implements RouteChangeService {
             System.out.println("The payload is"+payload);
             System.out.println("HttpEntity is"+httpEntity);
             try{
-                var response= restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Map.class);
+//                var response= restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Map.class);
+//                restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+                RestTemplate rest = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+
+//                HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+//                restTemplate.setRequestFactory(requestFactory);
+
+                var response = rest.exchange(url, HttpMethod.PATCH, httpEntity, Map.class);
                 System.out.println("status code : " + response.getStatusCode());
                 if(response.getStatusCode().toString().equals("200 OK")){
                     System.out.println("success");
@@ -257,8 +274,12 @@ public class routeChangesImpl implements RouteChangeService {
                     invalidList.add(task);
                 }
             }catch (Exception e) {
+                System.out.println("inside catch");
+                e.printStackTrace();
                 String errorResponse = e.getMessage();
                 String errorMessage = extractErrorMessageFromJson(errorResponse);
+                System.out.println("error response : " + errorResponse);
+                System.out.println("error message : " + errorMessage);
                 task.setLog(errorMessage);
                 invalidList.add(task);
             }

@@ -135,7 +135,7 @@ export default function RouteChanges() {
         const contentDispositionHeader = response.headers['content-disposition'];
         const fileName = contentDispositionHeader
             ? contentDispositionHeader.split('filename=')[1].trim()
-            : 'downloadedErrorFile.xls';
+            : 'downloadedErrorFile.xlsx';
 
         const blob = new Blob([response.data], { type: 'application/vnd.ms-excel' });
         const url = window.URL.createObjectURL(blob);

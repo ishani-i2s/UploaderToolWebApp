@@ -380,7 +380,7 @@ public class ExcelHelper {
             row.createCell(7).setCellValue(detail.getLog());
         }
 
-        String filePath = "src/main/resources/static/taskDetails.xlsx"; // Adjust the path as needed
+        String filePath = "src/main/resources/static/taskDetails.xls"; // Adjust the path as needed
         Path outputPath = Paths.get(filePath);
 
         try {
