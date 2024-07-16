@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 @Service
 public class routeChangesImpl implements RouteChangeService {
@@ -25,9 +28,12 @@ public class routeChangesImpl implements RouteChangeService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private RestTemplate restTemplatePatch;
-
+    public RestTemplate restTemplate() {
+      CloseableHttpClient httpClient = HttpClients.createDefault();
+      HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
+      RestTemplate restTemplatePatch = new RestTemplate(factory);
+      return restTemplatePatch;
+    }
 
 
 //    @Autowired
@@ -255,14 +261,7 @@ public class routeChangesImpl implements RouteChangeService {
             System.out.println("The payload is"+payload);
             System.out.println("HttpEntity is"+httpEntity);
             try{
-//                var response= restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, Map.class);
-//                restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-                RestTemplate rest = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-
-//                HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-//                restTemplate.setRequestFactory(requestFactory);
-
-                var response = rest.exchange(url, HttpMethod.PATCH, httpEntity, Map.class);
+                var response= restTemplate().exchange(url, HttpMethod.PATCH,  httpEntity, Void.class);
                 System.out.println("status code : " + response.getStatusCode());
                 if(response.getStatusCode().toString().equals("200 OK")){
                     System.out.println("success");
