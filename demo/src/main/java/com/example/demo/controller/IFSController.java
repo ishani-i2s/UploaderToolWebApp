@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 import com.example.demo.entity.FixedAsset;
 import com.example.demo.entity.FunctionalObject;
+import com.example.demo.entity.TaskDetails;
 import com.example.demo.service.FixedAssetsService;
 import com.example.demo.service.FunctionalObjectService;
+import com.example.demo.service.RouteChangeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.GeneratedValue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +37,9 @@ public class IFSController {
 
     @Autowired
     FixedAssetsService fixedAssets;
+
+    @Autowired
+    RouteChangeService taskDetails;
 
     @PostMapping("/excelUpload")
     public ResponseEntity<?> uploadExcel(@RequestParam("file") MultipartFile file,@RequestParam("accessToken") String accessToken){
@@ -124,5 +130,48 @@ public class IFSController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+
+    @PostMapping("/excelUploadRC")
+    public ResponseEntity<?> uploadExcelRC(@RequestParam("file") MultipartFile file, @RequestParam("accessToken") String accessToken) {
+        System.out.println("The file is"+file);
+        if(ExcelHelper.hasExcelFormat(file)){
+            try {
+                List<TaskDetails> errors=taskDetails.save(file,accessToken);
+                ExcelHelper.taskDetailsToExcel(errors);
+                int successCount = 0;
+                for(TaskDetails error:errors){
+                    if(error.getLog()=="Successfull"){
+                        successCount++;
+                    }
+                }
+                int errorCount = errors.size()-successCount;
+                Map<String,Integer> response = Map.of("successCount",successCount,"errorCount",errorCount);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } catch (Exception e) {
+                String message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+            }
+        }
+        return null;
+    }
+
+    @GetMapping("/excelDownloadRC")
+    public ResponseEntity<Resource> downloadExcelRC() {
+        String filePath = "src/main/resources/static/taskDetails.xls";
+        File file = new File(filePath);
+        Path path = Paths.get(filePath);
+        Resource resource = null;
+        try {
+            resource = new FileSystemResource(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+
 
 }

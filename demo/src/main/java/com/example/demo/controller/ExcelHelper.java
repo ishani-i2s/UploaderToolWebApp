@@ -353,6 +353,7 @@ public class ExcelHelper {
     }
 
     public static void taskDetailsToExcel(List<TaskDetails> details){
+        System.out.println("Task details : " + details);
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Task Details");
 
@@ -364,6 +365,7 @@ public class ExcelHelper {
         header.createCell(4).setCellValue("PlannedStartDate");
         header.createCell(5).setCellValue("WorkType");
         header.createCell(6).setCellValue("ObjectId");
+        header.createCell(7).setCellValue("Log");
 
         int rowNum = 1;
         for (TaskDetails detail : details) {
@@ -375,9 +377,10 @@ public class ExcelHelper {
             row.createCell(4).setCellValue(detail.getPlannedStartDate());
             row.createCell(5).setCellValue(detail.getWorkType());
             row.createCell(6).setCellValue(detail.getObjectId());
+            row.createCell(7).setCellValue(detail.getLog());
         }
 
-        String filePath = "src/main/resources/static/taskDetails.xlsx"; // Adjust the path as needed
+        String filePath = "src/main/resources/static/taskDetails.xls"; // Adjust the path as needed
         Path outputPath = Paths.get(filePath);
 
         try {
@@ -391,12 +394,33 @@ public class ExcelHelper {
     public static List<TaskDetails> readTaskDetails (InputStream inputStream){
         try{
             List<TaskDetails> taskDetailsList = new ArrayList<>();
+            System.out.println("task details count in read : " + taskDetailsList);
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
             XSSFSheet sheet = workbook.getSheetAt(0);
             System.out.println("The sheet is"+sheet);
             System.out.println("The sheet rows"+sheet.getPhysicalNumberOfRows());
 
+            int rowNo=0;
+            int rowCountWithData = 0;
+            for (Row row : sheet) {
+                boolean rowHasData = false;
+                // Iterate through each cell in the row
+                for (Cell cell : row) {
+                    // Check if cell is not empty
+                    if (cell.getCellType() != CellType.BLANK) {
+                        rowHasData = true;
+                        break;
+                    }
+                }
+                // If the row has at least one non-empty cell, consider it as a row with data
+                if (rowHasData) {
+                    rowCountWithData++;
+                }
+            }
+            System.out.println("Number of rows with data: " + rowCountWithData);
+
             for(int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
+                System.out.println("ok");
                 Row row = sheet.getRow(i);
                 TaskDetails taskDetails = new TaskDetails();
                 taskDetails.setTaskId(getCellValue(row.getCell(0)));
@@ -405,7 +429,16 @@ public class ExcelHelper {
                 taskDetails.setStatus(getCellValue(row.getCell(3)));
                 taskDetails.setPlannedStartDate(getCellValue(row.getCell(4)));
                 taskDetails.setWorkType(getCellValue(row.getCell(5)));
-                taskDetails.setObjectId(getCellValue(row.getCell(6)));
+//                taskDetails.setObjectId(getCellValue(row.getCell(6)));
+                // Specifically handle the objectId cell
+                Cell objectIdCell = row.getCell(6);
+                if (objectIdCell != null && objectIdCell.getCellType() == CellType.NUMERIC) {
+                    int objectIdValue = (int) objectIdCell.getNumericCellValue();
+                    taskDetails.setObjectId(Integer.toString(objectIdValue));
+                } else {
+                    taskDetails.setObjectId(getCellValue(objectIdCell));
+                }
+
                 taskDetailsList.add(taskDetails);
             }
             System.out.println("The task details list is"+taskDetailsList);
